@@ -1,19 +1,18 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # DEPENDENCY
 #
 type jwtgen ] &>/dev/null
-check_jwtgen=$?
-if [ $? -eq 1 ]; then
-    echo "Dependency not met: jwtgen.\n(Try: npm install -g jwtgen)"
+if [[ $? -eq 1 ]]; then
+    echo "Dependency not met: jwtgen.\n(Try: $ npm install -g jwtgen)"
     return
 fi
 
 # USAGE
 #
-if [ $# -ne 2 ]; then
+if [[ $# -ne 2 ]]; then
     script=$(echo $0 | awk -F'/' '{print $NF}')
-    echo "Usage:" $script "<UID> <secret>"
+    echo "Usage:" $script "<user_id> <secret>"
     exit
 fi
 
@@ -24,18 +23,15 @@ IAT=$(date -j -f "%a %b %d %T %Z %Y" "$(date)" "+%s")
 # GENERATE TOKEN
 #
 token=$(jwtgen -a HS256 -c UID=$1 -i $IAT -s $2)
-
-if [ $? -eq 1 ]; then
+if [[ $? -eq 1 ]]; then
     echo "Error: jwtgen failed."
     return
 fi
 
 type pbcopy &>/dev/null
-check=$?
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     echo $token | pbcopy
-    check=$?
-    if [ $? -eq 1 ]; then
+    if [[ $? -eq 1 ]]; then
         echo "Error: Could not copy to clipboard."
     else
         echo "Copied to clipboard."
@@ -44,11 +40,9 @@ if [ $? -eq 0 ]; then
 fi
 
 type clip.exe &>/dev/null
-check=$?
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     echo $token | clip.exe
-    check=$?
-    if [ $? -eq 1 ]; then
+    if [[ $? -eq 1 ]]; then
         echo "Error: Could not copy to clipboard."
     else
         echo "Copied to clipboard."
@@ -56,5 +50,5 @@ if [ $? -eq 0 ]; then
     return
 fi
 
-echo "Error: Could not access clipboard."
+echo "Warning: Could not access clipboard."
 echo "Token:" $token
