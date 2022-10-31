@@ -2,7 +2,7 @@
 
 # DEPENDENCY
 #
-type jwtgen ] &>/dev/null
+type jwtgen &>/dev/null
 if [[ $? -eq 1 ]]; then
     echo "Dependency not met: jwtgen.\n(Try: $ npm install -g jwtgen)"
     return
